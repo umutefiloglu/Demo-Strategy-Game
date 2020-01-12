@@ -20,6 +20,12 @@ public class InformationMenu : MonoBehaviour
     [SerializeField]
     GameObject soldierPrefab;
 
+    [SerializeField]
+    GameObject gameBoard;
+
+    [SerializeField]
+    GameObject gameManager;
+
     GameObject newSoldier;
     #endregion
 
@@ -30,7 +36,7 @@ public class InformationMenu : MonoBehaviour
         selectedGameObject = null;
         hit2D = new RaycastHit2D();
 
-        NewObjectCreatedEvent.AddListener(delegate { GameObject.Find("GameManager").GetComponent<SelectingObject>().NewObjectCreated(newSoldier); });
+        NewObjectCreatedEvent.AddListener(delegate { gameManager.GetComponent<SelectingObject>().NewObjectCreated(newSoldier); });
     }
     #endregion
 
@@ -38,7 +44,7 @@ public class InformationMenu : MonoBehaviour
     //Updates selected object (listener function)
     public void UpdateSelected()
     {
-        selectedGameObject = GameObject.Find("GameManager").GetComponent<SelectingObject>().SelectedGameObject;
+        selectedGameObject = gameManager.GetComponent<SelectingObject>().SelectedGameObject;
 
         if (selectedGameObject == null)
         {
@@ -70,7 +76,9 @@ public class InformationMenu : MonoBehaviour
             if (CheckForSpace() == true)
             {
                 newSoldier = Instantiate(soldierPrefab, hit2D.collider.transform.position, Quaternion.identity);
-                hit2D.collider.GetComponent<Tile>().isBusy = true;
+                newSoldier.GetComponent<Soldier>().GameBoard = gameBoard;
+                newSoldier.GetComponent<Soldier>().GameManager = gameManager;
+                hit2D.collider.GetComponent<Tile>().IsBusy = true;
                 NewObjectCreatedEvent.Invoke();
             }
             else
@@ -91,7 +99,7 @@ public class InformationMenu : MonoBehaviour
             Debug.DrawRay(new Vector3(selectedGameObject.transform.position.x + i, selectedGameObject.transform.position.y, selectedGameObject.transform.position.z) + new Vector3(0, 2.1f, 0), Vector2.up * 1000, Color.green, 2f);
 
             hit2D = Physics2D.Raycast(new Vector3(selectedGameObject.transform.position.x + i, selectedGameObject.transform.position.y, selectedGameObject.transform.position.z) + new Vector3(0, 2.1f, 0), Vector2.up * 1000);
-            if (hit2D.collider != null && hit2D.collider.GetComponent<Tile>() != null && hit2D.collider.GetComponent<Tile>().isBusy == false)
+            if (hit2D.collider != null && hit2D.collider.GetComponent<Tile>() != null && hit2D.collider.GetComponent<Tile>().IsBusy == false)
             {
                 Debug.Log(hit2D.collider.name + " is usable to deploy soldier.");
                 //deploy soldier and make tile busy
@@ -105,7 +113,7 @@ public class InformationMenu : MonoBehaviour
             Debug.DrawRay(new Vector3(selectedGameObject.transform.position.x + i, selectedGameObject.transform.position.y, selectedGameObject.transform.position.z) + new Vector3(0, -2.1f, 0), Vector2.down * 1000, Color.green, 100f);
 
             hit2D = Physics2D.Raycast(new Vector3(selectedGameObject.transform.position.x + i, selectedGameObject.transform.position.y, selectedGameObject.transform.position.z) + new Vector3(0, -2.1f, 0), Vector2.down * 1000);
-            if (hit2D.collider != null && hit2D.collider.GetComponent<Tile>() != null && hit2D.collider.GetComponent<Tile>().isBusy == false)
+            if (hit2D.collider != null && hit2D.collider.GetComponent<Tile>() != null && hit2D.collider.GetComponent<Tile>().IsBusy == false)
             {
                 Debug.Log(hit2D.collider.name + " is usable to deploy soldier.");
                 //deploy soldier and make tile busy
@@ -119,7 +127,7 @@ public class InformationMenu : MonoBehaviour
             Debug.DrawRay(new Vector3(selectedGameObject.transform.position.x, selectedGameObject.transform.position.y + i, selectedGameObject.transform.position.z) + new Vector3(2.1f, 0, 0), Vector2.right * 1000, Color.green, 100f);
 
             hit2D = Physics2D.Raycast(new Vector3(selectedGameObject.transform.position.x, selectedGameObject.transform.position.y + i, selectedGameObject.transform.position.z) + new Vector3(2.1f, 0, 0), Vector2.right * 1000);
-            if (hit2D.collider != null && hit2D.collider.GetComponent<Tile>() != null && hit2D.collider.GetComponent<Tile>().isBusy == false)
+            if (hit2D.collider != null && hit2D.collider.GetComponent<Tile>() != null && hit2D.collider.GetComponent<Tile>().IsBusy == false)
             {
                 Debug.Log(hit2D.collider.name + " is usable to deploy soldier.");
                 //deploy soldier and make tile busy
@@ -133,7 +141,7 @@ public class InformationMenu : MonoBehaviour
             Debug.DrawRay(new Vector3(selectedGameObject.transform.position.x, selectedGameObject.transform.position.y + i, selectedGameObject.transform.position.z) + new Vector3(-2.1f, 0, 0), Vector2.left * 1000, Color.green, 100f);
 
             hit2D = Physics2D.Raycast(new Vector3(selectedGameObject.transform.position.x, selectedGameObject.transform.position.y + i, selectedGameObject.transform.position.z) + new Vector3(-2.1f, 0, 0), Vector2.left * 1000);
-            if (hit2D.collider != null && hit2D.collider.GetComponent<Tile>() != null && hit2D.collider.GetComponent<Tile>().isBusy == false)
+            if (hit2D.collider != null && hit2D.collider.GetComponent<Tile>() != null && hit2D.collider.GetComponent<Tile>().IsBusy == false)
             {
                 Debug.Log(hit2D.collider.name + " is usable to deploy soldier.");
                 //deploy soldier and make tile busy
@@ -144,7 +152,7 @@ public class InformationMenu : MonoBehaviour
         //diagonal rays
         Debug.DrawRay(selectedGameObject.transform.position + new Vector3(2.1f, 2.1f, 0), new Vector3(1, 1, 0) * 1000, Color.green, 100f);
         hit2D = Physics2D.Raycast(selectedGameObject.transform.position + new Vector3(2.1f, 2.1f, 0), new Vector3(1, 1, 0) * 1000);
-        if (hit2D.collider != null && hit2D.collider.GetComponent<Tile>() != null && hit2D.collider.GetComponent<Tile>().isBusy == false)
+        if (hit2D.collider != null && hit2D.collider.GetComponent<Tile>() != null && hit2D.collider.GetComponent<Tile>().IsBusy == false)
         {
             Debug.Log(hit2D.collider.name + " is usable to deploy soldier.");
             //deploy soldier and make tile busy
@@ -154,7 +162,7 @@ public class InformationMenu : MonoBehaviour
 
         Debug.DrawRay(selectedGameObject.transform.position + new Vector3(-2.1f, 2.1f, 0), new Vector3(-1, 1, 0) * 1000, Color.green, 100f);
         hit2D = Physics2D.Raycast(selectedGameObject.transform.position + new Vector3(-2.1f, 2.1f, 0), new Vector3(-1, 1, 0) * 1000);
-        if (hit2D.collider != null && hit2D.collider.GetComponent<Tile>() != null && hit2D.collider.GetComponent<Tile>().isBusy == false)
+        if (hit2D.collider != null && hit2D.collider.GetComponent<Tile>() != null && hit2D.collider.GetComponent<Tile>().IsBusy == false)
         {
             Debug.Log(hit2D.collider.name + " is usable to deploy soldier.");
             //deploy soldier and make tile busy
@@ -164,7 +172,7 @@ public class InformationMenu : MonoBehaviour
 
         Debug.DrawRay(selectedGameObject.transform.position + new Vector3(-2.1f, -2.1f, 0), new Vector3(-1, -1, 0) * 1000, Color.green, 100f);
         hit2D = Physics2D.Raycast(selectedGameObject.transform.position + new Vector3(-2.1f, -2.1f, 0), new Vector3(-1, -1, 0) * 1000);
-        if (hit2D.collider != null && hit2D.collider.GetComponent<Tile>() != null && hit2D.collider.GetComponent<Tile>().isBusy == false)
+        if (hit2D.collider != null && hit2D.collider.GetComponent<Tile>() != null && hit2D.collider.GetComponent<Tile>().IsBusy == false)
         {
             Debug.Log(hit2D.collider.name + " is usable to deploy soldier.");
             //deploy soldier and make tile busy
@@ -174,7 +182,7 @@ public class InformationMenu : MonoBehaviour
 
         Debug.DrawRay(selectedGameObject.transform.position + new Vector3(2.1f, -2.1f, 0), new Vector3(1, -1, 0) * 1000, Color.green, 100f);
         hit2D = Physics2D.Raycast(selectedGameObject.transform.position + new Vector3(2.1f, -2.1f, 0), new Vector3(1, -1, 0) * 1000);
-        if (hit2D.collider != null && hit2D.collider.GetComponent<Tile>() != null && hit2D.collider.GetComponent<Tile>().isBusy == false)
+        if (hit2D.collider != null && hit2D.collider.GetComponent<Tile>() != null && hit2D.collider.GetComponent<Tile>().IsBusy == false)
         {
             Debug.Log(hit2D.collider.name + " is usable to deploy soldier.");
             //deploy soldier and make tile busy

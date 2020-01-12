@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ProductionMenu : MonoBehaviour
 {
@@ -8,14 +9,16 @@ public class ProductionMenu : MonoBehaviour
     private bool isCrossedBottom;
     private bool isCrossedTop;
 
-    private GameObject[] barrackButtons;
-    private GameObject[] powerPlantButtons;
+    private List<GameObject> buttonCouples;
 
-    private GameObject topmostBarrackButton;
-    private GameObject bottommostBarrackButton;
+    private GameObject topmostButtonCouple;
+    private GameObject bottommostButtonCouple;
 
-    private GameObject topmostPowerPlantButton;
-    private GameObject bottommostPowerPlantButton;
+    private Vector3 topmostButtonCreationPosition;
+    private Vector3 bottommostButtonCreationPosition;
+
+    [SerializeField]
+    ScrollRect scrollingAction;
 
     Camera mainCamera;
     #endregion
@@ -26,20 +29,26 @@ public class ProductionMenu : MonoBehaviour
     {
         isCrossedBottom = false;
         isCrossedTop = false;
-        barrackButtons = GameObject.FindGameObjectsWithTag("BarrackButton");
-        powerPlantButtons = GameObject.FindGameObjectsWithTag("PowerPlantButton");
 
-        topmostBarrackButton = barrackButtons[0];
-        bottommostBarrackButton = barrackButtons[0];
+        //get button couples
+        buttonCouples = new List<GameObject>();
+        //initialize
+        for (int i = 0; transform.childCount != i; i++)
+        {
+            buttonCouples.Add(transform.GetChild(i).gameObject);
+            //Debug.Log("Child Added!" + i);
 
-        topmostPowerPlantButton = powerPlantButtons[0];
-        bottommostPowerPlantButton = powerPlantButtons[0];
+            //add scrolling listeners
+            scrollingAction.onValueChanged.AddListener(transform.GetChild(i).GetComponent<ProductionUnitButton>().ReverseButtons);
+        }
+
+        topmostButtonCouple = buttonCouples[0];
+        bottommostButtonCouple = buttonCouples[0];
 
         mainCamera = Camera.main;
 
-        Debug.Log(barrackButtons);
-        Debug.Log(powerPlantButtons);
-
+        Debug.Log(buttonCouples);
+        
         FindExtremeButtons();
     }
 
@@ -61,13 +70,10 @@ public class ProductionMenu : MonoBehaviour
     #region Custom Functions
     void CreateButtonTop()
     {
-        topmostBarrackButton.transform.position = new Vector3(topmostBarrackButton.transform.position.x, mainCamera.orthographicSize, topmostBarrackButton.transform.position.z);
-        bottommostBarrackButton.transform.position = new Vector3(bottommostBarrackButton.transform.position.x, topmostBarrackButton.transform.position.y + 1f, bottommostBarrackButton.transform.position.z);
-        bottommostBarrackButton.GetComponent<BarrackButton>().Start();
-
-        topmostPowerPlantButton.transform.position = new Vector3(topmostPowerPlantButton.transform.position.x, mainCamera.orthographicSize, topmostPowerPlantButton.transform.position.z);
-        bottommostPowerPlantButton.transform.position = new Vector3(bottommostPowerPlantButton.transform.position.x, topmostPowerPlantButton.transform.position.y + 1f, bottommostPowerPlantButton.transform.position.z);
-        bottommostPowerPlantButton.GetComponent<PowerPlantButton>().Start();
+        FindExtremeButtons();
+        //topmostButtonCouple.transform.position = new Vector3(topmostButtonCouple.transform.position.x, mainCamera.orthographicSize, topmostButtonCouple.transform.position.z);
+        bottommostButtonCouple.transform.localPosition = topmostButtonCreationPosition;
+        //bottommostButtonCouple.GetComponent<BarrackButton>().Start();
 
         FindExtremeButtons();
         isCrossedTop = false;
@@ -75,13 +81,10 @@ public class ProductionMenu : MonoBehaviour
     
     void CreateButtonBottom()
     {
-        bottommostBarrackButton.transform.position = new Vector3(bottommostBarrackButton.transform.position.x, -mainCamera.orthographicSize, bottommostBarrackButton.transform.position.z);
-        topmostBarrackButton.transform.position = new Vector3(topmostBarrackButton.transform.position.x, bottommostBarrackButton.transform.position.y - 1f, topmostBarrackButton.transform.position.z);
-        topmostBarrackButton.GetComponent<BarrackButton>().Start();
-
-        bottommostPowerPlantButton.transform.position = new Vector3(bottommostPowerPlantButton.transform.position.x, -mainCamera.orthographicSize, bottommostPowerPlantButton.transform.position.z);
-        topmostPowerPlantButton.transform.position = new Vector3(topmostPowerPlantButton.transform.position.x, bottommostPowerPlantButton.transform.position.y - 1f, topmostPowerPlantButton.transform.position.z);
-        topmostPowerPlantButton.GetComponent<PowerPlantButton>().Start();
+        FindExtremeButtons();
+        //bottommostButtonCouple.transform.position = new Vector3(bottommostButtonCouple.transform.position.x, -mainCamera.orthographicSize, bottommostButtonCouple.transform.position.z);
+        topmostButtonCouple.transform.localPosition = bottommostButtonCreationPosition;
+        //topmostBarrackButton.GetComponent<BarrackButton>().Start();
 
         FindExtremeButtons();
         isCrossedBottom = false;
@@ -91,44 +94,39 @@ public class ProductionMenu : MonoBehaviour
     void FindExtremeButtons()
     {
         //o(n)
-        foreach (var barrackButton in barrackButtons)
+        foreach (var buttonCouple in buttonCouples)
         {
-            if (barrackButton.transform.position.y < bottommostBarrackButton.transform.position.y)
+            if (buttonCouple.transform.localPosition.y <= bottommostButtonCouple.transform.localPosition.y)
             {
-                bottommostBarrackButton = barrackButton;
+                bottommostButtonCouple = buttonCouple;
+                bottommostButtonCreationPosition = new Vector3(bottommostButtonCouple.transform.localPosition.x, bottommostButtonCouple.transform.localPosition.y - 45f, bottommostButtonCouple.transform.localPosition.z);
             }
-            if (barrackButton.transform.position.y > topmostBarrackButton.transform.position.y)
+            if (buttonCouple.transform.localPosition.y >= topmostButtonCouple.transform.localPosition.y)
             {
-                topmostBarrackButton = barrackButton;
+                topmostButtonCouple = buttonCouple;
+                topmostButtonCreationPosition = new Vector3(topmostButtonCouple.transform.localPosition.x, topmostButtonCouple.transform.localPosition.y + 45f, topmostButtonCouple.transform.localPosition.z);
             }
+            
         }
-        //o(n)
-        foreach (var powerPlantButton in powerPlantButtons)
-        {
-            if (powerPlantButton.transform.position.y < bottommostPowerPlantButton.transform.position.y)
-            {
-                bottommostPowerPlantButton = powerPlantButton;
-            }
-            if (powerPlantButton.transform.position.y > topmostPowerPlantButton.transform.position.y)
-            {
-                topmostPowerPlantButton = powerPlantButton;
-            }
-        }
+        //Debug.Log("Topmost creation position: " + topmostButtonCreationPosition + ", Bottommost creation position: " + bottommostButtonCreationPosition);
     }
     
     //checks if extreme object's position should be moved or not
     void CheckCrossings()
     {
-        if (topmostBarrackButton.transform.position.y < mainCamera.orthographicSize)
+        if (topmostButtonCouple.transform.position.y < mainCamera.orthographicSize)
         {
             isCrossedTop = true;
+            //Debug.Log("Top Crossed!");
         }
-        if (bottommostBarrackButton.transform.position.y > -mainCamera.orthographicSize)
+        if (bottommostButtonCouple.transform.position.y > -mainCamera.orthographicSize)
         {
             isCrossedBottom = true;
+            //Debug.Log("Bottom Crossed!");
         }
     }
 
+    /*
     public void UpButtonFunction()
     {
         foreach (var barrackButton in barrackButtons)
@@ -160,5 +158,6 @@ public class ProductionMenu : MonoBehaviour
             powerPlantButton.GetComponent<PowerPlantButton>().Start();
         }
     }
+    */
     #endregion
 }

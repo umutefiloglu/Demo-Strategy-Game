@@ -13,8 +13,12 @@ public abstract class ProductionButton : MonoBehaviour
     Vector3 mousePosition;
     public UnityEvent UpdateTileEvent;
 
-    protected GameObject[] tiles;
+    protected List<GameObject> tiles;
     protected GameObject affordance;
+    protected GameObject gameManager;
+
+    public Vector2 OldPosition { get => oldPosition; set => oldPosition = value; }
+    public bool CanBeDragged { get => canBeDragged; set => canBeDragged = value; }
     #endregion
 
     #region Unity Functions
@@ -24,11 +28,13 @@ public abstract class ProductionButton : MonoBehaviour
         canBeDragged = false;
         selectedObject = "Null";
         oldPosition = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y);
-
-        tiles = GameObject.FindGameObjectsWithTag("Tile");
        
         mousePosition = Input.mousePosition;
         mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
+
+        //initialize required objects
+        AssignTiles();
+        AssignGameManager();
 
         //add listeners
         //o(n)
@@ -49,7 +55,7 @@ public abstract class ProductionButton : MonoBehaviour
     //listener function update selected
     public void UpdateSelected()
     {
-        selectedObject = GameObject.Find("GameManager").GetComponent<SelectingObject>().SelectedObject;
+        selectedObject = gameManager.GetComponent<SelectingObject>().SelectedObject;
     }
 
     //Drags object
@@ -69,7 +75,7 @@ public abstract class ProductionButton : MonoBehaviour
         }
     }
 
-    private void OnMouseDown()
+    public void OnMouseDown()
     {
         if (AStarPathFinding2D.pathfindingStatus != 1)
         {
@@ -127,5 +133,7 @@ public abstract class ProductionButton : MonoBehaviour
     public abstract void ShowBuildArea();
     public abstract bool IsBuildable();
     public abstract void CreateBuilding();
+    public abstract void AssignTiles();
+    public abstract void AssignGameManager();
     #endregion
 }

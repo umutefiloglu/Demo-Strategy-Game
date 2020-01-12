@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+public enum WhoAmI { partOfBarrack, partOfPowerPlant, emptyTile };
+
 public class Tile : MonoBehaviour
 {
     #region Variables
@@ -15,37 +17,45 @@ public class Tile : MonoBehaviour
     [SerializeField]
     Sprite partOfBarrack;
 
-    public bool isBusy;
-    public bool isBusyAffordance;
+    public bool IsBusy { get; set; }
+    public bool IsBusyAffordance { get; set; }
 
-    public enum WhoAmI { partOfBarrack, partOfPowerPlant, emptyTile };
-    public WhoAmI whoAmI;
+    WhoAmI whoAmI;
+
+    public WhoAmI GetWhoAmI()
+    {
+        return whoAmI;
+    }
+    public void SetWhoAmI(WhoAmI value)
+    {
+        whoAmI = value;
+    }
     #endregion
 
     #region Unity Functions
     // Start is called before the first frame update
     void Start()
     {
-        isBusy = false;
-        isBusyAffordance = false;
-        whoAmI = WhoAmI.emptyTile;
+        IsBusy = false;
+        IsBusyAffordance = false;
+        SetWhoAmI(WhoAmI.emptyTile);
     }
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collider.gameObject.CompareTag("TileAffordance") && isBusy == false && whoAmI == WhoAmI.emptyTile)
+        if (collider.gameObject.CompareTag("TileAffordance") && IsBusy == false && GetWhoAmI() == WhoAmI.emptyTile)
         {
             gameObject.GetComponent<SpriteRenderer>().sprite = busyTileAffordanceSprite;
-            isBusyAffordance = true;
+            IsBusyAffordance = true;
         }
     }
 
     private void OnTriggerExit2D(Collider2D collider)
     {
-        if (collider.gameObject.CompareTag("TileAffordance") && isBusyAffordance == true && whoAmI == WhoAmI.emptyTile)
+        if (collider.gameObject.CompareTag("TileAffordance") && IsBusyAffordance == true && GetWhoAmI() == WhoAmI.emptyTile)
         {
             gameObject.GetComponent<SpriteRenderer>().sprite = tileSprite;
-            isBusyAffordance = false;
+            IsBusyAffordance = false;
         }
     }
     #endregion
@@ -54,17 +64,17 @@ public class Tile : MonoBehaviour
     //listener function updates tile
     public void UpdateTile()
     {
-        if (whoAmI == WhoAmI.partOfBarrack)
+        if (GetWhoAmI() == WhoAmI.partOfBarrack)
         {
             gameObject.GetComponent<SpriteRenderer>().sprite = partOfBarrack;
         }
-        else if (whoAmI == WhoAmI.partOfPowerPlant)
+        else if (GetWhoAmI() == WhoAmI.partOfPowerPlant)
         {
             gameObject.GetComponent<SpriteRenderer>().sprite = partOfPowerPlant;
         }
 
         //reset tile's affordance if it is empty
-        isBusyAffordance = false;
+        IsBusyAffordance = false;
     }
     #endregion
 }

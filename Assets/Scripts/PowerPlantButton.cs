@@ -9,6 +9,18 @@ public class PowerPlantButton : ProductionButton
 
     [SerializeField]
     GameObject powerPlantPrefab;
+
+    [SerializeField]
+    GameObject powerPlantAffordance;
+
+    [SerializeField]
+    GameObject gameManagerOnScene;
+
+    [SerializeField]
+    GameObject gameBoard;
+
+    [SerializeField]
+    GameObject scrollableObjects;
     #endregion
 
     #region Unity Functions
@@ -17,7 +29,7 @@ public class PowerPlantButton : ProductionButton
     {
         base.Start();
 
-        affordance = GameObject.Find("PowerPlantTileAffordance");
+        affordance = powerPlantAffordance;
     }
 
     // Update is called once per frame
@@ -42,7 +54,7 @@ public class PowerPlantButton : ProductionButton
         //o(n)
         foreach (var tile in tiles)
         {
-            if (tile.GetComponent<Tile>().isBusyAffordance == true)
+            if (tile.GetComponent<Tile>().IsBusyAffordance == true)
             {
                 ++_currentSize;
             }
@@ -54,9 +66,9 @@ public class PowerPlantButton : ProductionButton
             //o(n)
             foreach (var tile in tiles)
             {
-                if (tile.GetComponent<Tile>().isBusyAffordance == true)
+                if (tile.GetComponent<Tile>().IsBusyAffordance == true)
                 {
-                    tile.GetComponent<Tile>().whoAmI = Tile.WhoAmI.partOfPowerPlant;
+                    tile.GetComponent<Tile>().SetWhoAmI(WhoAmI.partOfPowerPlant);
                 }
             }
 
@@ -73,7 +85,7 @@ public class PowerPlantButton : ProductionButton
         //o(n)
         foreach (var tile in tiles)
         {
-            if (tile.GetComponent<Tile>().isBusyAffordance == true)
+            if (tile.GetComponent<Tile>().IsBusyAffordance == true)
             {
                 _buildLocation = new Vector3(_buildLocation.x + tile.transform.position.x, _buildLocation.y + tile.transform.position.y, _buildLocation.z + tile.transform.position.z - 1);
             }
@@ -81,6 +93,22 @@ public class PowerPlantButton : ProductionButton
         _buildLocation = new Vector3(_buildLocation.x / sizeOfPowerPlant, _buildLocation.y / sizeOfPowerPlant, _buildLocation.z / sizeOfPowerPlant);
 
         Instantiate(powerPlantPrefab, _buildLocation, Quaternion.identity);
+    }
+
+    public override void AssignGameManager()
+    {
+        gameManager = gameManagerOnScene;
+    }
+
+    public override void AssignTiles()
+    {
+        tiles = new List<GameObject>();
+        //initialize
+        for (int i = 0; gameBoard.transform.childCount != i; i++)
+        {
+            tiles.Add(gameBoard.transform.GetChild(i).gameObject);
+            //Debug.Log("Child Added!" + i);
+        }
     }
     #endregion
 }

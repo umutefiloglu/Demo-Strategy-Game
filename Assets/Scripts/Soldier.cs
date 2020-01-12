@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Soldier : MonoBehaviour
@@ -11,15 +12,29 @@ public class Soldier : MonoBehaviour
     [SerializeField]
     float walkCoroutineTime;
 
-    GameObject[] tiles;
+    [SerializeField]
+    GameObject gameBoard;
+
+    [SerializeField]
+    GameObject gameManager;
+
+    List<GameObject> tiles;
+
+    public GameObject GameBoard { get => gameBoard; set => gameBoard = value; }
+    public GameObject GameManager { get => gameManager; set => gameManager = value; }
     #endregion
 
     #region Unity Functions
     // Start is called before the first frame update
     void Start()
     {
+        tiles = new List<GameObject>();
         //initialize
-        tiles = GameObject.FindGameObjectsWithTag("Tile");
+        for (int i = 0; gameBoard.transform.childCount != i; i++)
+        {
+            tiles.Add(gameBoard.transform.GetChild(i).gameObject);
+            //Debug.Log("Child Added!" + i);
+        }
         pathFinder = gameObject.AddComponent<AStarPathFinding2D>();
         walkCoroutineTime = 0.5f;
     }
@@ -29,7 +44,7 @@ public class Soldier : MonoBehaviour
     //Updates selected object (listener function)
     public void UpdateSelected()
     {
-        selectedGameObject = GameObject.Find("GameManager").GetComponent<SelectingObject>().SelectedGameObject;
+        selectedGameObject = gameManager.GetComponent<SelectingObject>().SelectedGameObject;
 
         //if selected object is soldier, then we will wait for user input as destination
         if (selectedGameObject != null && selectedGameObject.CompareTag("Player") && selectedGameObject.transform.position == gameObject.transform.position)
@@ -48,7 +63,7 @@ public class Soldier : MonoBehaviour
             if (selectedGameObject != gameObject)
             {
                 isClicked = true;
-                selectedGameObject = GameObject.Find("GameManager").GetComponent<SelectingObject>().SelectedGameObject;
+                selectedGameObject = gameManager.GetComponent<SelectingObject>().SelectedGameObject;
                 Debug.Log("Waited for mouse click!");
 
                 //find tile that player currently stands

@@ -27,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 462960133049818511}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.9816532, y: 0.14208078, z: 0.061325915}
+  m_LocalPosition: {x: -8.203919, y: 2.70225, z: 0.47788525}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -124,3 +124,6 @@ MonoBehaviour:
       m_Calls: []
   barrackPrefab: {fileID: 90111355346718033, guid: c0410859559563948b64e312e3b12e65,
     type: 3}
+  barrackTileAffordance: {fileID: 0}
+  gameManagerOnScene: {fileID: 0}
+  gameBoard: {fileID: 0}

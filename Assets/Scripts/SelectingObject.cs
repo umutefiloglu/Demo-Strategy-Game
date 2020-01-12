@@ -12,6 +12,13 @@ public class SelectingObject : MonoBehaviour
     public UnityEvent NewObjectSelected;
     public string SelectedObject { get; set; }
     public GameObject SelectedGameObject { get; set; }
+
+    [SerializeField]
+    GameObject barrackButton;
+    [SerializeField]
+    GameObject powerPlantButton;
+    [SerializeField]
+    GameObject informationMenu;
     #endregion
 
     #region Unity Functions
@@ -24,22 +31,11 @@ public class SelectingObject : MonoBehaviour
         SelectedObject = "Null";
         SelectedGameObject = null;
 
-        //find listeners
-        GameObject[] _listenerBarrackButtons = GameObject.FindGameObjectsWithTag("BarrackButton");
-        GameObject[] _listenerPowerPlantButtons = GameObject.FindGameObjectsWithTag("PowerPlantButton");
-
-        //add listeners
-        foreach (var listenerBarrack in _listenerBarrackButtons)
-        {
-            NewObjectSelected.AddListener(listenerBarrack.GetComponent<BarrackButton>().UpdateSelected);
-        }
-        foreach (var listenerPP in _listenerPowerPlantButtons)
-        {
-            NewObjectSelected.AddListener(listenerPP.GetComponent<PowerPlantButton>().UpdateSelected);
-        }
-
+        //add buttons' listeners
+        NewObjectSelected.AddListener(barrackButton.GetComponent<BarrackButton>().UpdateSelected);
+        NewObjectSelected.AddListener(powerPlantButton.GetComponent<PowerPlantButton>().UpdateSelected);
         //add info menu listener
-        NewObjectSelected.AddListener(GameObject.Find("InformationMenu").GetComponent<InformationMenu>().UpdateSelected);
+        NewObjectSelected.AddListener(informationMenu.GetComponent<InformationMenu>().UpdateSelected);
     }
 
     // Update is called once per frame

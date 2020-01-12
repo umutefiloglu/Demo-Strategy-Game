@@ -32,7 +32,7 @@ public class AStarPathFinding2D : MonoBehaviour
 
     #region Custom Functions
     //Executive function
-    public bool FindPath(GameObject[] map, GameObject source, GameObject destination, GameObject soldier, float walkCoroutineTime)
+    public bool FindPath(List<GameObject> map, GameObject source, GameObject destination, GameObject soldier, float walkCoroutineTime)
     {
         //status of algorithm. 0 = initialize. 1 = start. 2 = finish.
         pathfindingStatus = 1;
@@ -57,7 +57,7 @@ public class AStarPathFinding2D : MonoBehaviour
             return true;
         }
         //if destination is not empty.
-        else if (destination.GetComponent<Tile>().isBusy == true)
+        else if (destination.GetComponent<Tile>().IsBusy == true)
         {
             Debug.Log("Destination tile is not empty!");
             pathfindingStatus = 2;
@@ -67,7 +67,7 @@ public class AStarPathFinding2D : MonoBehaviour
         Debug.Log("Pathfinding started from " + source.transform.position + " to " + destination.transform.position);
 
         //create Tilelogic from map. This extra data structure is defined due to single purpose concern of Tile class.
-        TileLogic[] tiles = new TileLogic[map.Length];
+        TileLogic[] tiles = new TileLogic[map.Count];
         for (int i = 0; i < tiles.Length; i++)
         {
             tiles[i] = new TileLogic(map[i], float.MaxValue, float.MaxValue, float.MaxValue); //initializing
@@ -300,7 +300,7 @@ public class AStarPathFinding2D : MonoBehaviour
         Debug.DrawRay(new Vector3(raySource.transform.position.x + rayDirection.x / 1.5f, raySource.transform.position.y + rayDirection.y / 1.5f, raySource.transform.position.z), rayDirection * .1f, Color.red, 2f);
         RaycastHit2D _hit2D = Physics2D.Raycast(new Vector3(raySource.transform.position.x + rayDirection.x / 1.5f, raySource.transform.position.y + rayDirection.y / 1.5f, raySource.transform.position.z), rayDirection * .1f);
 
-        if (_hit2D.collider == null || _hit2D.collider.gameObject.GetComponent<Tile>() == null || _hit2D.collider.gameObject.GetComponent<Tile>().isBusy == true)
+        if (_hit2D.collider == null || _hit2D.collider.gameObject.GetComponent<Tile>() == null || _hit2D.collider.gameObject.GetComponent<Tile>().IsBusy == true)
         {
             isSuccessorAvailable = false;
             return null;
@@ -354,9 +354,9 @@ public class AStarPathFinding2D : MonoBehaviour
         while (_pathStack.Count != 0)
         {
             //move one step
-            _currentTile.thisTile.GetComponent<Tile>().isBusy = false;
+            _currentTile.thisTile.GetComponent<Tile>().IsBusy = false;
             _currentTile = _pathStack.Pop();
-            _currentTile.thisTile.GetComponent<Tile>().isBusy = true;
+            _currentTile.thisTile.GetComponent<Tile>().IsBusy = true;
 
             soldier.gameObject.transform.position = _currentTile.thisTile.transform.position;
             yield return new WaitForSeconds(walkCoroutineTime);

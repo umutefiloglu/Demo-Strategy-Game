@@ -37,13 +37,13 @@ public class ProductionUnitButton : MonoBehaviour
 
     private void Update()
     {
-        if (ChildPowerPlant.GetComponent<Button>().image.sprite == powerPlantButtonClickedSprite && powerPlantButton.GetComponent<PowerPlantButton>().CanBeDragged == false)
+        if (powerPlantButton.transform.position != ChildPowerPlant.transform.position)
         {
-            powerPlantButton.transform.position = ChildPowerPlant.transform.position;
+            ChildPowerPlant.GetComponent<Button>().image.sprite = defaultPowerPlantButtonSprite;
         }
-        else if (ChildBarracks.GetComponent<Button>().image.sprite == barracksButtonClickedSprite && barracksButton.GetComponent<BarrackButton>().CanBeDragged == false)
+        if (barracksButton.transform.position != ChildBarracks.transform.position)
         {
-            barracksButton.transform.position = ChildBarracks.transform.position;
+            ChildBarracks.GetComponent<Button>().image.sprite = defaultbarracksButtonSprite;
         }
     }
 

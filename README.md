@@ -8,3 +8,4 @@
 ## Design Principles
 ![Design Principles](https://raw.githubusercontent.com/umutefiloglu/Demo-Strategy-Game/master/Photos%20%26%20SS's/design2.jpg?token=AEW6NR3JEHBFVAZ3DLNV5QK6M2PY4)
 ## Known Bug
+- One known bug is that game itself creating "new game object" whenever soldier is directed to move. I suppose that this is a bug of Unity.

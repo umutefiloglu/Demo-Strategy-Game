@@ -1,4 +1,7 @@
 # Demo-Strategy-Game
+## Some Screenshots From Project
+![DSG_2](https://raw.githubusercontent.com/umutefiloglu/Demo-Strategy-Game/master/Photos%20%26%20SS's/DSG_2.PNG)
+![DSG_3](https://raw.githubusercontent.com/umutefiloglu/Demo-Strategy-Game/master/Photos%20%26%20SS's/DSG_3.PNG)
 ## Final Scene
 ![Final Scene](https://raw.githubusercontent.com/umutefiloglu/Demo-Strategy-Game/master/Photos%20%26%20SS's/GameScene.PNG?token=AEW6NR2CSVI5DRRBK2RDVLS6M2PXW)
 ## Expected Game Board
